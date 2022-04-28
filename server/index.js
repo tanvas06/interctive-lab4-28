@@ -1,23 +1,24 @@
-const express = require(`express`)
-const path = require(`path`)
+
+
+const express = require('express')
+const path = require('path')
+const Rollbar = require('rollbar')
+
+let rollbar = new Rollbar({
+    accessToken: 'd0feabbf97d0464598fb7b56df7cb1fc',
+    captureUncaught: true,
+    captureUnhandledRejections: true
+})
 
 const app = express()
 
-// include and initialize the rollbar library with your access token
-var Rollbar = require('rollbar')
-var rollbar = new Rollbar({
-  accessToken: 'd0feabbf97d0464598fb7b56df7cb1fc',
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-})
+app.use(express.json())
+app.use('/style', express.static('../styles.css'))
 
-// record a generic message and send it to Rollbar
-rollbar.log('Hello world!')
+let students = []
 
-
-
-app.get(`/`, (req,res) => {
-    res.sendFile(path.join(__dirname, `../index.html`))
+app.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, '../index.html'))
     rollbar.info('html file served successfully.')
 })
 
@@ -43,6 +44,7 @@ app.post('/api/student', (req, res)=>{
 
 const port = process.env.PORT || 4545
 
+// rolly
 app.use(rollbar.errorHandler())
 
-app.listen(port, () => console.log(`listening on port ${port}`))
+app.listen(port, () => console.log(`Take us to warp ${port}!`))
